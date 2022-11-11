@@ -4,6 +4,8 @@ import { AuthService } from './auth.service';
 import GoogleAuthGuard from './guards/GoogleAuth.guard';
 import { Response, Request } from 'express';
 import { ConfigService } from '@nestjs/config';
+import JwtAuthGuard from './guards/JwtAuth.guard';
+import { CurrentUser } from '../decorators/CurrentUser.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -12,6 +14,12 @@ export class AuthController {
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
   ) {}
+
+  @Get('me')
+  @UseGuards(JwtAuthGuard)
+  me(@CurrentUser() user: { _id: string }) {
+    return user;
+  }
 
   @Get('google')
   @UseGuards(GoogleAuthGuard)
