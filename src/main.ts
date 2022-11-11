@@ -26,8 +26,10 @@ async function bootstrap() {
   app.use(cookieParser());
 
   app.use(function (req, res, next) {
-    res.header('x-powered-by', 'Blood, sweat, and tears.');
-    res.header('test-header', 'test-value');
+    res.header(
+      'Access-Control-Allow-Origin',
+      configService.get<string>('FRONTEND_ROOT'),
+    );
     next();
   });
 
