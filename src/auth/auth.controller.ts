@@ -43,8 +43,7 @@ export class AuthController {
       secure: this.configService.get<string>('ENV') === 'production',
       sameSite: 'strict',
       ...(this.configService.get<string>('ENV') === 'production' && {
-        domain: new URL(this.configService.get<string>('FRONTEND_ROOT'))
-          .hostname,
+        domain: 'onrender.com',
       }),
     });
 
