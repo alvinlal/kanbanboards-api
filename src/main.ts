@@ -24,6 +24,13 @@ async function bootstrap() {
   SwaggerModule.setup('/docs', app, document);
 
   app.use(cookieParser());
+
+  app.use(function (req, res, next) {
+    res.header('x-powered-by', 'Blood, sweat, and tears.');
+    res.header('test-header', 'test-value');
+    next();
+  });
+
   await app.listen(9000);
 }
 bootstrap();
