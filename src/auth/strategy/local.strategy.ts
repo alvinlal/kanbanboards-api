@@ -1,0 +1,23 @@
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { PassportStrategy } from '@nestjs/passport';
+import { Strategy } from 'passport-local';
+import { AuthService } from '../auth.service';
+
+@Injectable({})
+export default class LocalStrategy extends PassportStrategy(Strategy, 'local') {
+  constructor(private readonly authService: AuthService) {
+    super({ usernameField: 'email' }); // config
+  }
+  async validate(email: string, password: string) {
+    const user = await this.authService.validateUser(email, password);
+    if (!user) {
+      throw new UnauthorizedException('incorrect email or password');
+    }
+    if (!user.password) {
+      throw new UnauthorizedException(
+        'you have previously logged in with google, please setup a password by clicking on forgot password below.',
+      );
+    }
+    return user;
+  }
+}
