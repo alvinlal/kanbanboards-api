@@ -41,10 +41,7 @@ export class AuthController {
       httpOnly: true,
       maxAge: 2160000000,
       secure: this.configService.get<string>('ENV') === 'production',
-      sameSite: 'strict',
-      ...(this.configService.get<string>('ENV') === 'production' && {
-        domain: 'onrender.com',
-      }),
+      sameSite: this.configService.get('ENV') === 'production' ? 'lax' : 'none',
     });
 
     return req.user;
