@@ -1,6 +1,6 @@
 import { Transform, TransformFnParams } from 'class-transformer';
 import { IsEmail, MinLength, NotContains } from 'class-validator';
-import { IsUserExists } from '../../validators/isUserExists.validator';
+import { IsUserExists } from '../../validators/IsUserExists.validator';
 
 export class SignupDto {
   @IsEmail({}, { message: 'please enter a valid email' })
