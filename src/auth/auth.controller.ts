@@ -32,7 +32,7 @@ export class AuthController {
     res.cookie('ACCESS_TOKEN', jwtToken, {
       httpOnly: true,
       maxAge: 2160000000,
-      secure: this.configService.get<string>('NODE_ENV') === 'production',
+      secure: this.configService.get<string>('ENV') === 'production',
       sameSite: 'strict',
     });
 
