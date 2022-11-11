@@ -30,6 +30,7 @@ async function bootstrap() {
       'Access-Control-Allow-Origin',
       configService.get<string>('FRONTEND_ROOT'),
     );
+    res.header('x-powered-by', 'Blood, sweat, and tears.');
     next();
   });
 
