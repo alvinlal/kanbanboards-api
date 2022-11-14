@@ -8,6 +8,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import JwtStrategy from './strategy/jwt.strategy';
 import { UserModule } from '../user/user.module';
 import LocalStrategy from './strategy/local.strategy';
+import { JWT_EXPIRES_IN } from './auth.constants';
 
 @Module({
   controllers: [AuthController],
@@ -19,7 +20,7 @@ import LocalStrategy from './strategy/local.strategy';
       useFactory: async (configService: ConfigService) => {
         return {
           secret: configService.get<string>('JWT_SECRET'),
-          signOptions: { expiresIn: '25 days' },
+          signOptions: { expiresIn: JWT_EXPIRES_IN },
         };
       },
       inject: [ConfigService],
