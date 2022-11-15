@@ -19,19 +19,23 @@ export class AuthService {
       return null;
     }
 
+    if (user && !user.password) {
+      return user;
+    }
+
     const isValid = await bcrypt.compare(password, user.password);
 
     if (!isValid) {
       return null;
     }
 
-    return { _id: user._id };
+    return user;
   }
 
   async signup(data: {
     email: string;
     password: string;
-  }): Promise<Partial<UserDocument>> {
+  }): Promise<{ _id: string }> {
     const password = await bcrypt.hash(data.password, 10);
     const user = await this.userService.create(data.email, password);
     return { _id: user._id };

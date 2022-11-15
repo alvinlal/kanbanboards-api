@@ -9,12 +9,13 @@ import JwtStrategy from './strategy/jwt.strategy';
 import { UserModule } from '../user/user.module';
 import LocalStrategy from './strategy/local.strategy';
 import { JWT_EXPIRES_IN } from './auth.constants';
+import { IsUserExistsConstraint } from '../validators/IsUserExists.validator';
 
 @Module({
   controllers: [AuthController],
   imports: [
     UserModule,
-    PassportModule,
+    PassportModule.register({ session: false }),
     JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => {
@@ -26,6 +27,12 @@ import { JWT_EXPIRES_IN } from './auth.constants';
       inject: [ConfigService],
     }),
   ],
-  providers: [AuthService, GoogleStrategy, JwtStrategy, LocalStrategy],
+  providers: [
+    AuthService,
+    GoogleStrategy,
+    JwtStrategy,
+    LocalStrategy,
+    IsUserExistsConstraint,
+  ],
 })
 export class AuthModule {}
