@@ -10,7 +10,7 @@ export class AuthService {
     email: string,
     password: string,
   ): Promise<Partial<UserDocument> | null> {
-    const user = await this.userService.findOne(
+    const user = await this.userService.findOneUser(
       { email },
       { _id: true, password: true },
     );
@@ -37,7 +37,7 @@ export class AuthService {
     password: string;
   }): Promise<{ _id: string }> {
     const password = await bcrypt.hash(data.password, 10);
-    const user = await this.userService.create(data.email, password);
+    const user = await this.userService.createUser(data.email, password);
     return { _id: user._id };
   }
 }

@@ -1,35 +1,27 @@
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { FilterQuery, Model, ProjectionType } from 'mongoose';
-import { User, UserDocument } from './schemas/User.schema';
+import { FilterQuery, ProjectionType } from 'mongoose';
+import { UserDocument } from './schemas/User.schema';
+import UserRepository from './user.repository';
 
 @Injectable()
 export class UserService {
-  constructor(
-    @InjectModel(User.name)
-    private readonly userModel: Model<UserDocument>,
-  ) {}
+  constructor(private readonly userRepository: UserRepository) {}
 
-  async findOne(
+  async findOneUser(
     filter: FilterQuery<UserDocument>,
-    projection: ProjectionType<UserDocument> = {
-      _id: true,
-      email: true,
-      password: true,
-    },
+    projection: ProjectionType<UserDocument>,
   ): Promise<UserDocument> {
-    return await this.userModel.findOne(filter, projection);
+    return await this.userRepository.findOne(filter, projection);
   }
 
-  async create(
+  async createUser(
     email: string,
     password: string | null,
   ): Promise<Partial<UserDocument>> {
-    const newUser = new this.userModel({ email, password });
-    return await newUser.save();
+    return this.userRepository.create({ email, password });
   }
 
   async userExists(email: string): Promise<boolean> {
-    return !!(await this.userModel.count({ email }));
+    return !!(await this.userRepository.count({ email }));
   }
 }

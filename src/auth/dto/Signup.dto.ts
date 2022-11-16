@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, MinLength, NotContains } from 'class-validator';
 import { IsUserExists } from '../../validators/IsUserExists.validator';
 
-export class SignupDto {
+export default class SignupDto {
   @IsEmail({}, { message: 'please enter a valid email' })
   @IsUserExists({ message: 'Account already exists, please login' })
   @ApiProperty({ description: 'email of the user' })

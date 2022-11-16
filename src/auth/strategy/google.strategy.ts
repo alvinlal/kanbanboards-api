@@ -27,12 +27,15 @@ export default class GoogleStrategy extends PassportStrategy(
     profile: Profile,
     done: VerifyCallback,
   ) {
-    const user = await this.userService.findOne(
+    const user = await this.userService.findOneUser(
       { email: profile._json.email },
       { _id: true },
     );
     if (user) return done(null, { _id: user._id });
-    const newUser = await this.userService.create(profile._json.email, null);
+    const newUser = await this.userService.createUser(
+      profile._json.email,
+      null,
+    );
     return done(null, { _id: newUser._id });
   }
 }

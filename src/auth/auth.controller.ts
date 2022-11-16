@@ -3,7 +3,7 @@ import { AuthService } from './auth.service';
 import GoogleAuthGuard from './guards/GoogleAuth.guard';
 import { Request } from 'express';
 import { CurrentUser } from '../decorators/CurrentUser.decorator';
-import { SignupDto } from './dto/Signup.dto';
+import SignupDto from './dto/Signup.dto';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import meDecorators from './decorators/me.decorator';
 import InternalServerErrorResponseDecorator from '../decorators/InternalServerErrorResponse.decorator';
