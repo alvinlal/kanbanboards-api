@@ -4,8 +4,9 @@ import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import * as cookieParser from 'cookie-parser';
 import { COOKIE_NAME } from './auth/auth.constants';
-import { ValidationPipe, BadRequestException } from '@nestjs/common';
-import { useContainer, ValidationError } from 'class-validator';
+import { ValidationPipe } from '@nestjs/common';
+import { useContainer } from 'class-validator';
+import { validationPipeConfig } from './validationPipeConfig';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -46,21 +47,7 @@ async function bootstrap() {
   });
 
   // class-validator
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      exceptionFactory: (validationErrors: ValidationError[] = []) => {
-        return new BadRequestException(
-          validationErrors.map((error) => {
-            delete error.target;
-            delete error.children;
-            delete error.value;
-            return error;
-          }),
-        );
-      },
-    }),
-  );
+  app.useGlobalPipes(new ValidationPipe(validationPipeConfig));
 
   await app.listen(9000);
 }

@@ -11,7 +11,7 @@ import { map } from 'rxjs';
 import { COOKIE_NAME, COOKIE_MAX_AGE } from '../auth.constants';
 
 @Injectable()
-export default class SetJwtCookieInterceptor implements NestInterceptor {
+export class SetJwtCookieInterceptor implements NestInterceptor {
   constructor(
     private readonly configService: ConfigService,
     private readonly jwtService: JwtService,

@@ -1,6 +1,6 @@
 import { ApiInternalServerErrorResponse } from '@nestjs/swagger';
 
-export default () =>
+export const InternalServerErrorResponseDecorator = () =>
   ApiInternalServerErrorResponse({
     description: 'returns 500 on any server errors',
     schema: {

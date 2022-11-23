@@ -1,21 +1,14 @@
 import { applyDecorators, UseInterceptors } from '@nestjs/common';
 import { ApiBadRequestResponse, ApiCreatedResponse } from '@nestjs/swagger';
-import SetJwtCookieInterceptor from '../interceptors/SetJwtCookie.interceptor';
+import { SignupResponseDto } from '../dto/response/SignupResponse.dto';
+import { SetJwtCookieInterceptor } from '../interceptors/SetJwtCookie.interceptor';
 
-export default function signupDecorators() {
+export function signupDecorators() {
   return applyDecorators(
     UseInterceptors(SetJwtCookieInterceptor),
     ApiCreatedResponse({
       description: 'returns object containing unique id of the user',
-      schema: {
-        type: 'object',
-        properties: {
-          _id: {
-            type: 'string',
-            description: 'unique id of the user',
-          },
-        },
-      },
+      type: SignupResponseDto,
     }),
     ApiBadRequestResponse({
       description:
@@ -27,7 +20,8 @@ export default function signupDecorators() {
             {
               property: 'email',
               constraints: {
-                IsEmailExists: 'Account already exists, please login',
+                isEmailExists: 'Account already exists, please login',
+                isEmail: 'please enter a valid email',
               },
             },
             {

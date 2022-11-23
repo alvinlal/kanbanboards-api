@@ -5,10 +5,7 @@ import { Profile, Strategy, VerifyCallback } from 'passport-google-oauth20';
 import { UserService } from '../../user/user.service';
 
 @Injectable()
-export default class GoogleStrategy extends PassportStrategy(
-  Strategy,
-  'google',
-) {
+export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
   constructor(
     private readonly configService: ConfigService,
     private readonly userService: UserService,

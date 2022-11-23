@@ -1,15 +1,17 @@
 import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import GoogleAuthGuard from './guards/GoogleAuth.guard';
+import { GoogleAuthGuard } from './guards/GoogleAuth.guard';
 import { Request } from 'express';
-import { CurrentUser } from '../decorators/CurrentUser.decorator';
-import SignupDto from './dto/Signup.dto';
+import { CurrentUser } from '../user/decorators/CurrentUser.decorator';
+import { SignupRequestDto } from './dto/request/SignupRequest.dto';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
-import meDecorators from './decorators/me.decorator';
-import InternalServerErrorResponseDecorator from '../decorators/InternalServerErrorResponse.decorator';
-import signupDecorators from './decorators/signup.decorator';
-import loginDecorators from './decorators/login.decorator';
-import googleRedirectDecorators from './decorators/googleRedirect.decorator';
+import { meDecorators } from './decorators/me.decorator';
+import { InternalServerErrorResponseDecorator } from '../decorators/InternalServerErrorResponse.decorator';
+import { signupDecorators } from './decorators/signup.decorator';
+import { loginDecorators } from './decorators/login.decorator';
+import { googleRedirectDecorators } from './decorators/googleRedirect.decorator';
+import { SignupResponseDto } from './dto/response/SignupResponse.dto';
+import { MeResponseDto } from './dto/response/MeResponse.dto';
 
 @Controller('auth')
 @ApiTags('auth')
@@ -19,13 +21,13 @@ export class AuthController {
 
   @Get('me')
   @meDecorators()
-  me(@CurrentUser() user: { _id: string }) {
+  me(@CurrentUser() user: { _id: string }): MeResponseDto {
     return user;
   }
 
   @Post('signup')
   @signupDecorators()
-  async signup(@Body() body: SignupDto) {
+  async signup(@Body() body: SignupRequestDto): Promise<SignupResponseDto> {
     return await this.authService.signup(body);
   }
 
@@ -50,6 +52,4 @@ export class AuthController {
   googleRedirect(@Req() req: Request) {
     return req.user;
   }
-
-  // TODO:- make reusable swagger schema (create new folder) and put userResponse in there
 }

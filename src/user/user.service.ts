@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { FilterQuery, ProjectionType } from 'mongoose';
-import { UserDocument } from './schemas/User.schema';
-import UserRepository from './user.repository';
+import { User, UserDocument } from './schemas/User.schema';
+import { UserRepository } from './user.repository';
 
 @Injectable()
 export class UserService {
@@ -10,14 +10,11 @@ export class UserService {
   async findOneUser(
     filter: FilterQuery<UserDocument>,
     projection: ProjectionType<UserDocument>,
-  ): Promise<UserDocument> {
+  ): Promise<User> {
     return await this.userRepository.findOne(filter, projection);
   }
 
-  async createUser(
-    email: string,
-    password: string | null,
-  ): Promise<Partial<UserDocument>> {
+  async createUser(email: string, password: string | null): Promise<User> {
     return this.userRepository.create({ email, password });
   }
 

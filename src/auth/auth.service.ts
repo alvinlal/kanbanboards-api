@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { UserDocument } from '../user/schemas/User.schema';
+import { User } from '../user/schemas/User.schema';
 import { UserService } from '../user/user.service';
 import * as bcrypt from 'bcrypt';
+import { SignupResponseDto } from './dto/response/SignupResponse.dto';
 @Injectable()
 export class AuthService {
   constructor(private readonly userService: UserService) {}
@@ -9,7 +10,7 @@ export class AuthService {
   async validateUser(
     email: string,
     password: string,
-  ): Promise<Partial<UserDocument> | null> {
+  ): Promise<Partial<User> | null> {
     const user = await this.userService.findOneUser(
       { email },
       { _id: true, password: true },
@@ -35,7 +36,7 @@ export class AuthService {
   async signup(data: {
     email: string;
     password: string;
-  }): Promise<{ _id: string }> {
+  }): Promise<SignupResponseDto> {
     const password = await bcrypt.hash(data.password, 10);
     const user = await this.userService.createUser(data.email, password);
     return { _id: user._id };

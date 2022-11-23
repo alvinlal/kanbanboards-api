@@ -9,41 +9,23 @@ import {
   ApiOkResponse,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import LocalAuthGuard from '../guards/LocalAuth.guard';
-import SetJwtCookieInterceptor from '../interceptors/SetJwtCookie.interceptor';
+import { LoginRequestDto } from '../dto/request/LoginRequest.dto';
+import { LoginResponseDto } from '../dto/response/LoginResponse.dto';
+import { LocalAuthGuard } from '../guards/LocalAuth.guard';
+import { SetJwtCookieInterceptor } from '../interceptors/SetJwtCookie.interceptor';
 
-export default function loginDecorators() {
+export function loginDecorators() {
   return applyDecorators(
     UseInterceptors(SetJwtCookieInterceptor),
     UseGuards(LocalAuthGuard),
     HttpCode(200),
     ApiBody({
       description: 'email and password of the user',
-      schema: {
-        type: 'object',
-        properties: {
-          email: {
-            type: 'string',
-            description: 'email of the user',
-          },
-          password: {
-            type: 'string',
-            description: 'password of the account',
-          },
-        },
-      },
+      type: LoginRequestDto,
     }),
     ApiOkResponse({
       description: 'returns object containing unique id of the user',
-      schema: {
-        type: 'object',
-        properties: {
-          _id: {
-            type: 'string',
-            description: 'unique id of the user',
-          },
-        },
-      },
+      type: LoginResponseDto,
     }),
     ApiUnauthorizedResponse({
       description:
