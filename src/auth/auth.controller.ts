@@ -1,7 +1,15 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { GoogleAuthGuard } from './guards/GoogleAuth.guard';
-import { Request } from 'express';
+import { Request, Response } from 'express';
 import { CurrentUser } from '../user/decorators/CurrentUser.decorator';
 import { SignupRequestDto } from './dto/request/SignupRequest.dto';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -12,6 +20,8 @@ import { loginDecorators } from './decorators/login.decorator';
 import { googleRedirectDecorators } from './decorators/googleRedirect.decorator';
 import { SignupResponseDto } from './dto/response/SignupResponse.dto';
 import { MeResponseDto } from './dto/response/MeResponse.dto';
+import { COOKIE_NAME } from './auth.constants';
+import { logoutDecorators } from './decorators/logout.decorator';
 
 @Controller('auth')
 @ApiTags('auth')
@@ -44,12 +54,21 @@ export class AuthController {
     description: 'redirects to accounts.google.com',
   })
   google() {
-    return { msg: 'Google authentication' };
+    //
   }
 
   @Get('google/redirect')
   @googleRedirectDecorators()
   googleRedirect(@Req() req: Request) {
     return req.user;
+  }
+
+  @Get('logout')
+  @logoutDecorators()
+  logout(@Res() res: Response) {
+    res.clearCookie(COOKIE_NAME);
+    return res.json({
+      success: true,
+    });
   }
 }

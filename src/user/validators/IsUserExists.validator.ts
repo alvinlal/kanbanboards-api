@@ -5,16 +5,15 @@ import {
   ValidatorConstraintInterface,
   ValidationOptions,
 } from 'class-validator';
-import { UserService } from '../user.service';
+import { UserRepository } from '../user.repository';
 
 @ValidatorConstraint({ name: 'isEmailExists', async: true })
 @Injectable()
 export class IsUserExistsConstraint implements ValidatorConstraintInterface {
-  constructor(protected readonly userService: UserService) {}
+  constructor(protected readonly userRepository: UserRepository) {}
   async validate(email: string): Promise<boolean> {
-    // TODO call userRepository.count directly
     // if this function returns true, then no errors are thrown
-    return !(await this.userService.userExists(email));
+    return !!!(await this.userRepository.count({ email }));
   }
 }
 

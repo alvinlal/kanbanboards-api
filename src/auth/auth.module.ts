@@ -9,7 +9,6 @@ import { JwtStrategy } from './strategy/jwt.strategy';
 import { UserModule } from '../user/user.module';
 import { LocalStrategy } from './strategy/local.strategy';
 import { JWT_EXPIRES_IN } from './auth.constants';
-import { IsUserExistsConstraint } from '../user/validators/IsUserExists.validator';
 
 @Module({
   controllers: [AuthController],
@@ -27,12 +26,6 @@ import { IsUserExistsConstraint } from '../user/validators/IsUserExists.validato
       inject: [ConfigService],
     }),
   ],
-  providers: [
-    AuthService,
-    GoogleStrategy,
-    JwtStrategy,
-    LocalStrategy,
-    IsUserExistsConstraint,
-  ],
+  providers: [AuthService, GoogleStrategy, JwtStrategy, LocalStrategy],
 })
 export class AuthModule {}

@@ -256,7 +256,7 @@ describe('AuthController (e2e)', () => {
 
     describe('when login is called with incorrect password', () => {
       beforeEach(async () => {
-        await dbConnection.collection('user').insertOne({
+        await dbConnection.collection('users').insertOne({
           email: userStub().email,
           password: await bcrypt.hash(userStub().password, 10),
         });

@@ -12,7 +12,12 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get<ConfigService>(ConfigService);
   app.enableCors({
-    origin: configService.get<string>('FRONTEND_ROOT'),
+    origin: [
+      configService.get<string>('FRONTEND_ROOT'),
+      ...(configService.get<string>('ENV') === 'development' && [
+        configService.get<string>('STORYBOOK_ROOT'),
+      ]),
+    ],
     credentials: true,
   });
 
