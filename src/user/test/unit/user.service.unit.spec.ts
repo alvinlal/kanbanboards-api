@@ -1,76 +1,111 @@
-import { Test } from '@nestjs/testing';
-import { UserRepository } from '../../user.repository';
 import { UserService } from '../../user.service';
-import { mockUserRepository } from '../mocks/mockUserRepository';
+import { userRepositoryMock } from '../mock/userRepository.mock';
+import { Test } from '@nestjs/testing';
+import { getRepositoryToken } from '@nestjs/typeorm';
+import { User } from '../../entities/User.entity';
+import { faker } from '@faker-js/faker';
 import { userStub } from '../stubs/user.stub';
 
 describe('UserService', () => {
   let userService: UserService;
-  let userRepository: UserRepository;
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
-      providers: [UserService, UserRepository],
-    })
-      .overrideProvider(UserRepository)
-      .useValue(mockUserRepository)
-      .compile();
+      providers: [
+        UserService,
+        {
+          provide: getRepositoryToken(User),
+          useValue: userRepositoryMock,
+        },
+      ],
+    }).compile();
 
     userService = moduleRef.get<UserService>(UserService);
-    userRepository = moduleRef.get<UserRepository>(UserRepository);
   });
 
-  describe('findOneUser()', () => {
-    it('should call userRepository.findOne', async () => {
-      await userService.findOneUser({ _id: userStub()._id }, { _id: true });
-      expect(userRepository.findOne).toHaveBeenCalledWith(
-        { _id: userStub()._id },
-        { _id: true },
-      );
+  describe('findOne()', () => {
+    it('should call userRepository.findOne()', async () => {
+      const email = faker.internet.email();
+      await userService.findOne({ email }, { user_id: true, email: true });
+      expect(userRepositoryMock.findOne).toHaveBeenCalledWith({
+        where: {
+          email,
+        },
+
+        select: { user_id: true, email: true },
+      });
     });
 
-    it('should return an user ', async () => {
+    it('should return correct user', async () => {
+      const email = faker.internet.email();
       expect(
-        await userService.findOneUser({ _id: userStub()._id }, { _id: true }),
+        await userService.findOne({ email }, { user_id: true, email: true }),
       ).toEqual(userStub());
     });
   });
 
   describe('createUser()', () => {
-    it('should call userRepository.create', async () => {
-      await userService.createUser(userStub().email, userStub().password);
+    it('should call userRepository.create()', async () => {
+      const email = faker.internet.email();
+      const password = faker.internet.password();
 
-      expect(userRepository.create).toHaveBeenCalledWith({
-        email: userStub().email,
-        password: userStub().password,
+      await userService.createUser(email, password);
+
+      expect(userRepositoryMock.create).toHaveBeenCalledWith({
+        email,
+        password,
       });
     });
 
-    it('should return an user ', async () => {
-      expect(
-        await userService.createUser(userStub().email, userStub().password),
-      ).toEqual(userStub());
+    it('should call userRepository.save()', async () => {
+      const { email, password, user_id } = userStub();
+
+      await userService.createUser(email, password);
+
+      expect(userRepositoryMock.save).toHaveBeenCalledWith({
+        email,
+        password,
+        user_id,
+      });
+    });
+
+    it('should return object with newly created user_id', async () => {
+      const email = faker.internet.email();
+      const password = faker.internet.password();
+
+      expect(await userService.createUser(email, password)).toEqual({
+        user_id: userStub().user_id,
+      });
     });
   });
 
   describe('userExists()', () => {
-    it('should call userRepository.count', async () => {
-      await userService.userExists(userStub().email);
+    it('should call userRepository.count()', async () => {
+      const email = faker.internet.email();
 
-      expect(userRepository.count).toHaveBeenCalledWith({
-        email: userStub().email,
+      userRepositoryMock.count.mockResolvedValueOnce(0);
+
+      await userService.userExists(email);
+
+      expect(userRepositoryMock.count).toHaveBeenCalledWith({
+        where: { email },
       });
     });
 
-    it("should return false if user doesn't exists", async () => {
-      expect(await userService.userExists(userStub().email)).toBe(false);
+    it("should return false when user doesn't exist", async () => {
+      const email = faker.internet.email();
+
+      userRepositoryMock.count.mockResolvedValueOnce(0);
+
+      expect(await userService.userExists(email)).toBe(false);
     });
 
-    it('should return true if user exists', async () => {
-      jest
-        .spyOn(userRepository, 'count')
-        .mockImplementationOnce(() => Promise.resolve(1));
-      expect(await userService.userExists(userStub().email)).toBe(true);
+    it('should return true when user exists', async () => {
+      const email = faker.internet.email();
+
+      userRepositoryMock.count.mockResolvedValueOnce(1);
+
+      expect(await userService.userExists(email)).toBe(true);
     });
   });
 });

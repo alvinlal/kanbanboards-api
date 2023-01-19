@@ -14,7 +14,7 @@ async function bootstrap() {
   app.enableCors({
     origin: [
       configService.get<string>('FRONTEND_ROOT'),
-      ...(configService.get<string>('ENV') === 'development'
+      ...(configService.get<string>('NODE_ENV') === 'development'
         ? [configService.get<string>('STORYBOOK_ROOT')]
         : []),
     ],

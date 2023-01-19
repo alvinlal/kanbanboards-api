@@ -1,13 +1,13 @@
 import { faker } from '@faker-js/faker';
-import { User } from '../../schemas/User.schema';
+import { User } from '../../entities/User.entity';
 
-const _id = faker.datatype.uuid();
+const user_id = faker.datatype.uuid();
 const email = faker.internet.email();
 const password = faker.internet.password(6);
 
 export const userStub = (): User => {
   return {
-    _id,
+    user_id,
     email,
     password,
   };
