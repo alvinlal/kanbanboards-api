@@ -8,6 +8,7 @@ import { userStub } from '../stubs/user.stub';
 
 describe('UserService', () => {
   let userService: UserService;
+  const { email, password, user_id } = userStub();
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
@@ -58,8 +59,6 @@ describe('UserService', () => {
     });
 
     it('should call userRepository.save()', async () => {
-      const { email, password, user_id } = userStub();
-
       await userService.createUser(email, password);
 
       expect(userRepositoryMock.save).toHaveBeenCalledWith({

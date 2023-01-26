@@ -23,4 +23,9 @@ export class DatabaseService {
     await this.dataSource.query('SET FOREIGN_KEY_CHECKS = 0;');
     await Promise.all(queryPromises);
   }
+
+  async cleanTable(entity) {
+    const tableName = this.dataSource.getMetadata(entity);
+    await this.dataSource.query(`TRUNCATE TABLE ${tableName.givenTableName};`);
+  }
 }

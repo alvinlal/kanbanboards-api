@@ -28,8 +28,8 @@ describe('UserService', () => {
     userRepository = module.get('UserRepository');
   });
 
-  afterEach(async () => {
-    await db.cleanTables();
+  beforeEach(async () => {
+    await db.cleanTable(User);
   });
 
   afterAll(async () => {
